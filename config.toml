@@ -1,0 +1,49 @@
+baseurl = "/"
+languageCode = "en-us"
+title = "plantarum.ca"
+theme = "hugo-ivy"
+googleAnalytics = ""
+disqusShortname = ""
+ignoreFiles = ["~$", "\\#$", "\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$", "#$"]
+enableEmoji = true
+
+[permalinks]
+    post = "/:year/:month/:day/:slug/"
+
+[[menu.main]]
+    name = "About"
+    url = "/about/"
+[[menu.main]]
+    name = "Notebooks"
+    url = "/notebooks/"
+[[menu.main]]
+    name = "GitHub"
+    url = "https://github.com/plantarum"
+[[menu.main]]
+    name = "Twitter"
+    url = "https://twitter.com/sedgeboy"
+
+[params]
+    description = "Diversity and biogeography of crop wild relatives, weeds and invasive species"
+
+    # options for highlight.js (version, additional languages, and theme)
+    highlightjsVersion = "9.12.0"
+    highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs"
+    highlightjsLang = ["r", "yaml"]
+    highlightjsTheme = "github"
+
+    MathJaxCDN = "//cdnjs.cloudflare.com/ajax/libs"
+    MathJaxVersion = "2.7.5"
+
+    # path to the favicon, under "static"
+    favicon = "favicon.ico"
+
+    [params.logo]
+    url = "tybio-square.jpg"
+    width = 50
+    height = 50
+    alt = "Tyler"
+
+
+    [params.icon]
+    url = "favicon.ico"

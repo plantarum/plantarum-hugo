@@ -1,0 +1,10 @@
+---
+title: "New Blog: Moving To Hugo"
+categories: news
+excerpt: "Plantarum.ca is moving from Jekyll to Hugo"
+tags: [news, reproducible research]
+date: 2020-06-16
+---
+I'm moving my blog from [Jekyll](https://jekyllrb.com/) (and the lovely [Minimal Mistakes theme](https://mmistakes.github.io/minimal-mistakes/) to [Hugo](https://gohugo.io/)). They're both static site generators, but Hugo has much better integration with R, via the [blogdown package](https://bookdown.org/yihui/blogdown/), and [Emacs' Orgmode](https://orgmode.org) (via a native translator, I think?).
+
+The primary motivation for this is that I have a growing collection of notes in RMarkdown and Orgmode format, including lots of citations, and it's too much hassle converting them into the plain markdown supported by Jekyll to post them online. It will take a while to port the content from the old site to the new one, and I'll probably pick another theme at some point. But in the meantime, Hugo makes it easy to get some of my notes online where they might be useful.
