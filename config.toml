@@ -11,14 +11,17 @@ enableEmoji = true
     post = "/:year/:month/:day/:slug/"
 
 [[menu.main]]
-    name = "Tutorials"
-    url = "/tutorials/"
-[[menu.main]]
     name = "Notebooks"
     url = "/notebooks/"
+    weight = 100
 [[menu.main]]
     name = "About"
     url = "/about/"
+    weight = 300
+[[menu.main]]
+    name = "Tutorials"
+    url = "/tutorials/"
+    weight = 200
 
 [params]
     description = "Diversity and biogeography of crop wild relatives, weeds and invasive species"
