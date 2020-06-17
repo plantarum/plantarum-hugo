@@ -15,7 +15,7 @@ More info:
 - [Publications](http://scholar.google.ca/citations?user=LPgEa6UAAAAJ)
 - [Photos](https://flickr.com/photos/carex)
 - [Github](https://github.com/plantarum)
-- [iNaturalist](https://www.inaturalist.org/people/plantarum")
+- [iNaturalist](https://www.inaturalist.org/people/plantarum)
 - [ORCiD](https://orcid.org/0000-0001-7683-2653)
 - [Mastodon](https://scholar.social/@plantarum)
 - [Twitter](https://twitter.com/sedgeboy)
