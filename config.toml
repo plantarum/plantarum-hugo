@@ -1,7 +1,7 @@
 baseurl = "/"
 languageCode = "en-us"
 title = "plantarum.ca"
-theme = "hugo-ivy"
+theme = "hugo-lithium"
 googleAnalytics = ""
 disqusShortname = ""
 ignoreFiles = ["~$", "\\#$", "\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$", "#$"]
@@ -11,17 +11,14 @@ enableEmoji = true
     post = "/:year/:month/:day/:slug/"
 
 [[menu.main]]
-    name = "About"
-    url = "/about/"
+    name = "Tutorials"
+    url = "/tutorials/"
 [[menu.main]]
     name = "Notebooks"
     url = "/notebooks/"
 [[menu.main]]
-    name = "GitHub"
-    url = "https://github.com/plantarum"
-[[menu.main]]
-    name = "Twitter"
-    url = "https://twitter.com/sedgeboy"
+    name = "About"
+    url = "/about/"
 
 [params]
     description = "Diversity and biogeography of crop wild relatives, weeds and invasive species"
