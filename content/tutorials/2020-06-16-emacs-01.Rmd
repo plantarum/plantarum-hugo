@@ -1,8 +1,12 @@
 ---
-categories: ["tutorials"]
+categories: 
+- tutorials
 excerpt: "Emacs for Bioinformatics, Getting Started"
 date: "2020-06-16"
-tags: ["emacs", "programming", "bioinformatics"]
+tags: 
+- emacs
+- programming
+- bioinformatics
 title: "Emacs for Bioinformatics: Getting Started"
 slug: emacs-tutorial-01
 bibliography: ../plantarum.bib
@@ -23,9 +27,11 @@ One last caveat: I work on Linux, and so the examples here will assume you are t
    - write the code
    - run the code in a shell
    - save the results
-   
+
+More importantly, by the end of this quick example, I hope you'll see that Emacs, while a little weird, isn't *that* different from more conventional programs. And if I can convince you of that, then we'll be ready to explore some of the more useful features it has for us.
+
 # Getting Started
-You'll need to install Emacs if it isn't already. On Ubuntu, you can do this directly from the Software Center. Other distributions will undoubtedly have it in their repositories, and you can get the latest release directly from [GNU](https://www.gnu.org/software/emacs/ "GNU Emacs") for Windows and Mac[^1]. 
+You'll need to install Emacs if it isn't already. On Ubuntu, you can do this directly from the Software Center. Other distributions will undoubtedly have it in their repositories, and you can get the latest release directly from [GNU](https://www.gnu.org/software/emacs/ "GNU Emacs") for Windows and Mac (and Linux)[^1]. 
 
 Start by opening Emacs from the launcher, or with the command `emacs` on the command line. This should open up a new graphical window that looks something like this:
 
@@ -77,7 +83,7 @@ You can also save the text in the terminal window as a text file, again using th
 
 # So... what?
 
-That may have been a little underwhelming, if you've every listened to an Emacs zealot ramble on about how mind-blowing this program is. What I hope you got from this short introduction is:
+That may have been a little underwhelming, if you've ever listened to an Emacs zealot ramble on about how mind-blowing this program is. What I hope you got from this short introduction is:
 
 - Emacs has some quirks, but it's basically just a text editor that you can use like any other editor, with a few concessions
 - Having your script file and terminal in the same program is handy for developing scripts
@@ -91,9 +97,12 @@ It would be much better if we could:
 
 - write our script in a single file
 - have the commands sent automatically to the shell
-- have the results pasted back into the script file
+- have the results pasted back into the script file at the appropriate location
 
-Then we wouldn't have to keep track of different files. And eventually, we'll be using R as well as Bash - can we mix all of that together, along with our own notes?
+That would be a big improvement. Emacs can do that and more:
+
+- mix different languages, including Bash, R, Python and more in one file
+- include human language, including sections, formatting (bold, italics), and links to other files and websites -- *all in the same source file*
 
 That's where `orgmode` comes in, and it really is a killer feature. But before we get there, we need to get a bit more familiar with the basics of Emacs. For this, I strongly recommend the built-in tutorial. You can start it with `C-h t` from Emacs. It takes 20 or 30 minutes, and explains the basics of getting around in the program. Try that out, and we'll look at `orgmode` in the next post.
 
