@@ -1,4 +1,4 @@
-baseurl = "/"
+baseurl = "https://plantarum.ca"
 languageCode = "en-us"
 title = "plantarum.ca"
 theme = "hugo-lithium"

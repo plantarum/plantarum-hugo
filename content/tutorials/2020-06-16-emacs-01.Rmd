@@ -23,7 +23,7 @@ You may have heard of [orgmode](https://orgmode.org/ "Orgmode Website"). This is
 One last caveat: I work on Linux, and so the examples here will assume you are too. Most of Emacs' features work the same on Windows and Macs, but interacting with external processes, like a Bash shell, may require additional configuration on those systems.
 
 # Objectives
-1. Create a new bash shell script:
+- Create a new bash shell script:
    - write the code
    - run the code in a shell
    - save the results
