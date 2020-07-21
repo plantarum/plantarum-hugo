@@ -392,6 +392,122 @@ The ecospat package also provides functions to contrast environmental conditions
 
 `ecospat` provides all the functions necessary to test niche differences in E-space and G-space, in the `COUE` framework (centroid, overlap, underfilling and expansion).
 
+### Climate Models
+> Climate projections are not predictions of future conditions—they are model-derived descriptions of possible future climates under a given set of plausible scenarios of climate forcings. The intention of simulating future climate is not to make accurate predictions regarding the future state of the climate system at any given point in time but to represent the range of plausible futures and establish the envelope that the future climate could conceivably occupy.
+
+- @harris.etal_2014
+
+#### Recommendations
+From @harris.etal_2014 (originally presented as 9 points):
+
+1. Include a high and a low emissions scenario, to capture 'best-case' and
+   'worst-case' scenarios.
+   
+   Note that as of 2014 we are trending close to the high emissions RCP8.5
+   scenario. RCP2.6 represents an increasingly unlikely aggressive
+   mitigation approach.
+
+2. Time and resources may limit us to one or two emissions scenarios, but
+   more than one GCM should be used.
+   
+   Different GCMs have different strengths, weaknesses and biases. Some
+   models are known to be 'wet' or 'dry' or 'hot', compared to the mean of
+   all GCMs. These biases are also spatially variable: some GCMs may be
+   'hot' for Africa, and 'cold' for North America.
+
+   Ostenibly different GCMs may share code and assumptions, and thus share
+   biases in their projections.
+
+3. Consider the most appropriate way to present the output from multiple
+   climate models;
+   
+   - If the multi-model mean is presented, report the range or standard
+     deviation;
+   - best-case and worst-case scenarios can be presented using
+     envelopes/binary maps: envelopes based on locations where *any* of the
+     models predict suitable habitat show worst case (i.e., all areas
+     identified as being suitable habitat in any model), envelopes based on
+     locations identified by *all* models show best case (i.e., only areas
+     that all models agree are suitable are identified) [good approach for
+     IAS].
+
+4. Choose a baseline time period appropriate to the study
+   
+   - baselines are preferably defined on data amalgamated over 30 years, to
+     account for stochastic inter-annual variation. Shorter time periods
+     may be unacceptably influenced by noisy weather.
+   - baseline climate should correspond to the time period in which the
+     data (i.e., observations) were collected
+   - NB: different climate sources use different baseline periods!
+   - Further discussed in @roubicek.etal_2010. They tested the sensitivity
+     of SDMs trained on a different baseline than the one used to simulate
+     the data, and found those models were signficantly worse than ones
+     trained on the correct baseline.
+
+5. Be aware of the real resolution of the climate data used;
+
+   - GCMs are coarse resolution, and need to be down-scaled for use with
+     SDMs.
+
+6. Maintain a dialog with climate modelers, to keep up-to-date with
+   developments in climate models.
+
+#### WorldClim
+[WorldClim 2.1](https://worldclim.org/data/cmip6/cmip6climate.html) has CMIP6 data: 9 GCMs for four SSP, at resolutions down to 2.5 minutes (30 seconds overdue for release in March 2020), projected to 2040, 2060, 2080 and 2100.
+
+[WorldClim 1.4](https://worldclim.org/data/v1.4/cmip5.html) has CMIP5 data: 19 GCMs, four RCP, projected to 2050 and 2070, at resolutions as low as 30 seconds.
+
+#### Definitions
+
+AR
+: **Assessment Report** for the IPCC. AR4 was released in 2007, AR5 in
+  2014, AR6 is scheduled for 2022
+
+CMIP
+: **Coupled Model Intercomparison Project**, IPCC collection of GCMs,
+  Numbered to correspond to the AR (eg. CMIP5 for AR5). "Models are only
+  admitted to the CMIP archive if they meet a suite of rigorous
+  requirements, including consistency with relevant observations, both past
+  and present, and with fundamental physical principles." IPCC doesn't
+  judge the models beyond being deemed fit for service. As such, the
+  collection of models represents set of plausible future climates under a
+  given emissions scenario.
+
+GCM
+: **General Circulation Model**: 3D numerical representation of the climate
+  system. 50-250km cell size, 10-20 layers in the atmosphere. Includes
+  **Atmosphere-Ocean GCM** (AOGCM), incorportating interactions between the
+  oceans and atmosphere, and **Earth System Models** (ESM), GCMs that
+  incorporate biogeochemical cycles (eg. carbon cycle); ESM may also
+  contain dynamic global vegetation models (DGVM)
+
+SRES / RCP / SSP
+: **Special Report on Emissions Scenarios**, socioeconomic analysis of
+  future climate emissions under varying conditions, used in AR4. Updated
+  to **Representative Concentration Pathways**, in AR5. Updated to
+  **Shared Socionomic Pathways**, in AR6. RCP2.6/ SSP 126 is aggressive
+  mitigation (best case); RCP8.5/SSP 585 is ~current trajectory (worst
+  case)
+
+#### Downscaling
+GCMs have a native resolution in the range of 50-250km^2^, much coarser than what is used for SDMs. To use for model projections, we need to downscale them to the appropriate scale. Three options:
+
+Dynamic Downscaling
+: uses the coarse-resolution GCMs as the input for similarly complex
+  fine-scale models for the region of interest. Lots of added value
+  compared to the GCMs, but computationally expensive, requiring expert
+  skill to produce and interpret. Thus availability is limited.
+
+Statistical Downscaling
+: uses past coars and fine-scale data to establish statistical/numerical
+  models mapping regional data to local data. Then uses the resulting model
+  to create future local data from future projections. Easier to do than
+  Dynamic Downscaling, but less realistic, more implicit assumptions.
+
+Simple Scaling
+: break coarse pixels up into smaller pixels containing the same value as
+  the parent; doesn't create any new values, or introduce any error.
+
 ## Ensembles
 TODO
 
