@@ -178,8 +178,45 @@ produce more parsimonious and interpretable models.
 Pairwise correlations can be used to identify pairs or groups of variables
 that are highly correlated. ENMTools [@warren.etal_2019] provides several
 helper functions for this, including `raster.cor.matrix`,
-`raster.cor.plot`. I prefer using `hclust` based on `1 - abs(cor)` to
-visualize correlated groups.
+`raster.cor.plot`. 
+
+I prefer using `hclust` based on `1 - abs(cor)` to
+visualize correlated groups:
+
+```{R libraries, warning = FALSE, message = FALSE, error = FALSE, echo = FALSE, results = FALSE}
+library(raster)     # stack()
+library(dismo)      # sample data
+library(ENMTools)   # raster.cor.matrix()
+library(stats)      # as.dist()
+library(graphics)   # abline()
+
+path <- file.path(system.file(package="dismo"), 'ex')
+files <- list.files(path, pattern='grd$', full.names=TRUE )
+predictors <- stack(files)
+```
+
+```{R hclust, warning = FALSE, message = FALSE, error = FALSE}
+## "predictors" is a raster stack
+
+## Calculate correlations:
+cors <- raster.cor.matrix(predictors) # from ENMTools
+
+threshold = 0.7  ## the maximum permissible correlation
+
+dists <- as.dist(1 - abs(cors))
+
+clust <- hclust(dists)
+groups <- cutree(clust, h = 1 - threshold)
+
+## Visualize groups:
+plot(clust)
+abline(h = 1 - threshold, col = 'red', lwd = 2)
+
+## Print the groups:
+groups
+```
+
+After running this, `groups` will identify which cluster each variable belongs to. Keep at most one variable from each group. This doesn't absolutely guarantee that variables in different groups will have correlations less than `threshold`, but in most cases this will be true. When it isn't, the highest inter-group correlation will still be very close to the threshold. If you're concerned, double check the correlations of the variables after you've picked them. 
 
 However, this won't address multicollinearity among three or more
 variables. @guisan.etal_2017 suggest using the function `usdm::vif`
