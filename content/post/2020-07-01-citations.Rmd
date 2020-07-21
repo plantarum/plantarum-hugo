@@ -1,0 +1,60 @@
+---
+title: "Blogdown Citations: Using Zotero with RMarkdown"
+categories: blogging
+excerpt: "Integrating Zotero, RMarkdown and Blogdown"
+tags: [zotero, rmarkdown, emacs, blogdown]
+date: 2020-07-20
+slug: blogdown-citations
+---
+So far, [blogdown](https://bookdown.org/yihui/blogdown/) has been really nice to work with. The documentation is really good, and it covered just about everything I needed to get up and running. 
+
+The only thing that isn't in the official manual is how to include citations. I'll run down my system here before I forget what I've done.
+
+First off, you need a reference database. I am a long-time user of [BibTeX](http://www.bibtex.org/), and have accumulated a large database of references. However, no-one I work with uses this system, and I don't have a compelling reason to convert anyone. 
+
+So in the interests of collaboration, I'm moving to [Zotero](https://www.zotero.org/). Zotero is a more conventional graphical program, with a desktop app and a web interface. With the addition of the [Better BibTeX](https://retorque.re/zotero-better-bibtex/) plugin, it can also be configured to automatically sync your online Zotero database with a BibTeX file on your local computer. This means I can continue to use Emacs' BibTeX support for "cite-while-you-write" composing, while managing the actual data in a format I can easily share with colleagues.
+
+# Setup
+Here is how my current setup works:
+
+First, head over to [Zotero](https://www.zotero.org/), sign up for a free account, and install the desktop app for your operating system (the big three are all supported). Next, you'll need to install [Better BibTeX](https://retorque.re/zotero-better-bibtex/) plugin. You might need to restart Zotero to get everything working together.
+
+Now you can get Better BibTeX configured. Open up the Zotero desktop app, and follow the menus: `Edit -> Preferences -> Better Bibtex`. Here you can set the citation key format. I use `[authEtAl]_[year]`, which creates keys that look like `Smith_2002`, `SouleMills_1998`, and `BrookEtAl_2002`. There are a lot of options, described in the [Better BibTeX manual](https://retorque.re/zotero-better-bibtex/citing/#configurable-citekey-generator).
+
+Now you're ready to start adding references to your database, if you haven't already. Zotero has [`Connectors`](https://www.zotero.org/download/connectors) that add a button to your browser, so you can add a reference to your library with a single click. You can also import from other formats.
+
+Once you've got some references in your library, you need to export it to a file, so it will be accessible when you compile your RMarkdown file. To do this, left-click on the library you want to export in the left pane of the Zotero window. Select `Export Library`, and be sure to check the `Keep Updated` box. Then select the format `Better CSL JSON`. Use the file browser to pick a convenient location, and you're done.
+
+By ticking the `Keep Updated` box, Zotero will automatically update this file when you make any changes to your library. That means you don't ever need to export it again, or even open up the `json` file.
+
+# Use
+After all that, you're ready to add citations to your posts. You need to add one line to your header, indicating where the `json` file is:
+
+```
+title: "Blogdown Citations: Using Zotero with RMarkdown"
+bibliography: /path/to/my/bibliography.json
+```
+
+Basic citations are entered as:
+
+| Input                           | Output                      |
+|:--------------------------------|:----------------------------|
+| `[@Smith_2002]`                 | (Smith 2002)                |
+| `[e.g., @Smith_2002, page 37]`  | (e.g., Smith 2002, page 37) |
+| `as claimed by @Smith_2002`     | as claimed by Smith (2002)  |
+| `as Smith claimed -@Smith_2002` | as Smith claimed (2002)     |
+
+At this point, when you rebuild your site with `blogdown::build_site()` (or `site_serve`), the processor will recognize the citations, look them up in your bibliography file, and replace them with properly formatted citations. The reference list is appended at the end of the document, as you would expect. 
+
+# Emacs Specifics: Cite As You Write
+So far, so good. But entering citations by hand is still tedious. It would be much better to have a quick-lookup function, that would allow you to quickly pick a reference and have the citation inserted for you.
+
+There are plugins for different editors that will handle this for you. I assume [RStudio](https://rstudio.com/) provides something convenient, but I don't use it so I don't know for sure. The rest of this post will describe how I get "Cite As You Write" in Emacs.
+
+Emacs has some limited support for picking citations directly from Zotero  via  [zotxt](https://github.com/egh/zotxt) and the  [zotxt-emacs](https://github.com/egh/zotxt-emacs) package. However, these are relatively rudimentary compared to what's available for BibTeX. I've hit on a solution that lets me use my favourite BibTeX features to insert citations, while Zotero manages my database behind the scenes.
+
+To accomplish this, you need to export a second database file. The steps are identical to what we did above for the `.json` file, but this time we'll pick the `Better BibTeX` format. Be sure to check the `Keep Updated` option, as we did before. It's convenient to save the file in the same directory as the first one, but you don't have to.
+
+Now Zotero will keep both of these files in sync automatically. We never need to look at them directly, we can continue to use the Zotero program as our primary tool for managing our references. When we build our site, `Blogdown` will look up our references in the `.json` file, and while we're writing we can use Emacs' BibTeX support to lookup citations keys in the `.bibtex` file. The same keys are used in both files.
+
+As I mentioned, Emacs has several options for looking up and inserting BibTeX citation keys. I'm currently using [ivy bibtex](https://github.com/tmalsburg/helm-bibtex), which is provided as part of the `helm-bibtex` package. It's well-documented on its home page.
