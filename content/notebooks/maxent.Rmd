@@ -2,7 +2,7 @@
 categories:
 - notebooks
 excerpt: Best practices for building Maxent models
-updated: 2020-07-07
+updated: 2020-07-27
 tags:
 - sdm
 - review
@@ -12,9 +12,10 @@ slug: maxent
 output:
   blogdown::html_page:
     toc: true
-bibliography: ../plantarum.bib
-link-citations: true
 date: 2020-06-15
+bibliography: ../plantarum.bib
+csl: ../american-journal-of-botany.csl
+link-citations: true
 ---
 
 ## Sampling Bias
@@ -350,6 +351,10 @@ with each other. Which is a little reassuring I suppose? They used AUC on
 presence/absence data as the 'gold standard', and found that the continuous
 Boyce index (which uses presence-only data) performed best.
 
+This can be calculated with the function `ecospat::boyce()`, which takes a
+raster of suitability values and a matrix or data.frame containing the
+coordinates of presences.
+
 ### Thresholds
 
 @radosavljevic.anderson_2014 Threshold-dependent evaluation requires
@@ -402,6 +407,19 @@ implemented it looks like they only allow for 2-fold and 4-fold
 cross-validation. I'm not sure there's any reason not to use checkerboards
 to do 9- or 16- fold cross validation?
 
+### Spatial Null Models
+Not often used, but see @Rodriguez-ReyEtAl_2013, and discussion of
+@BahnMcGill_2007.
+
+The `dismo` package [@hijmans.etal_2017] provides the function `geoDist` to
+serve as a spatial null model. Provided a matrix of occurence points, it
+generates a simple model of occurence based on the distribution of those
+points (i.e., the likelihood of an occurence at a location is inversely
+proportional to the distance of that location from known occurences).
+
+`geoDist` returns a raster of 'suitability' values that can be evaluated
+just as the output from an SDM model projection.
+
 ## Projection
 Complex models, with large numbers of predictors, or that use complex features, are more likely to be overfit. Overfitting sacrifices generality (i.e., capacity to project to different scenarios) in favour of better fit to training data. Consequently, for the purposes of projection, we may want to emphasize smaller, simpler models. See also @petitpierre.etal_2017 for discussion of variable selection.
 
@@ -435,7 +453,7 @@ The ecospat package also provides functions to contrast environmental conditions
 ### Climate Models
 > Climate projections are not predictions of future conditions—they are model-derived descriptions of possible future climates under a given set of plausible scenarios of climate forcings. The intention of simulating future climate is not to make accurate predictions regarding the future state of the climate system at any given point in time but to represent the range of plausible futures and establish the envelope that the future climate could conceivably occupy.
 
-- @harris.etal_2014
+-- @harris.etal_2014
 
 #### Recommendations
 From @harris.etal_2014 (originally presented as 9 points):
