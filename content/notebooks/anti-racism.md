@@ -2,7 +2,6 @@
 categories:
 - notebooks
 excerpt: Anti-racism Resources for Scientists
-modified: "2020-06-22"
 tags:
 - anti-racism
 title: Anti-racism Resources for Scientists
@@ -12,8 +11,8 @@ output:
     toc: true
 bibliography: ../plantarum.bib
 link-citations: true
-draft: true
-updated: 2020-06-22
+draft: TRUE
+date: 2020-06-22
 ---
 
 # Websites
