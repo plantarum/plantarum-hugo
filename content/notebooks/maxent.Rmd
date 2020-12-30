@@ -2,7 +2,7 @@
 categories:
 - notebooks
 excerpt: Best practices for building Maxent models
-updated: 2020-10-02
+updated: 2020-11-03
 tags:
 - sdm
 - review
@@ -18,7 +18,7 @@ csl: ../american-journal-of-botany.csl
 link-citations: true
 ---
 
-## Key Resources
+# Key Resources
 
 @MerowEtAl_2013 provides a very thorough introduction to Maxent modeling, and especially to what the various settings mean and how to set them.
 
@@ -28,7 +28,17 @@ link-citations: true
 
 From the same author (Adam B. Smith), a [webinar on using herbarium data in ecology, evolution and conservation](http://www.earthskysea.org/museum-herbarium-data/), and a [database of biodiversity databases](https://docs.google.com/spreadsheets/d/1qsK1MNLsi-QjK9VptgeV2HfrB7mWUVxjZdaj_P9Qs-Y/edit#gid=975168115).
 
-## Sampling Bias
+## Technical Summaries
+
+@PhillipsEtAl_2017 provides a short discussion of recent developments of
+the Maxent application, and related statisical methods. See papers cited
+there for (even more) detailed information.
+
+[@ElithEtAl_2010a] provides a statistical interpretation of the Maxent
+process; possibly superceded by @PhillipsEtAl_2017 and the work cited
+therein, which was done post-2010.
+
+# Sampling Bias
 
 Sampling bias in occurrence data is an issue because it means we can't be
 sure a species is detected under certain conditions because that's it's
@@ -116,7 +126,15 @@ appropriate to subset the reference set to increase the likelihood of this
 being true: use only graminoids as biased background for sedges, or woody
 plants as background for a tree?
 
-## Study Extent
+# Spatial Bias
+@ElithEtAl_2010a -- The area of individual cells in raster layers projected
+in Lat-Lon coordinates are not equal. This can be corrected by:
+
+- project the grids to an equal area projection
+- create a 'bias grid' that can be used to weight background samples
+- create a background sample with appropriate sampling weights
+
+# Study Extent
 Discussed extensively in @BarveEtAl_2011. They identified three general
 approaches to consider:
 
@@ -151,7 +169,7 @@ existing range of the species; evaluating invasion potential should use an
 extent large enough to encompass the areas of concern (i.e., global, or
 continental scale for novel invasives).
 
-## Variable Selection
+# Variable Selection
 Variables == predictors, the spatial layers used as the environmental/dependent variables in the model.
 
 Interesting discussion in @GuisanEtAl_2017 (section 6.4, page 102+):
@@ -171,6 +189,10 @@ relationship to slope and elevation are likely different in southern US vs
 northern Canada, for instance. On the other hand, a species relationship to
 temperature, however coarsely it is mapped, is likely similar across its
 geographic range.
+
+@ElithEtAl_2010a point out that Maxent's built-in variable selection (via L1-regularization) is reliable, relatively insensitive to correlation among variables, and model performance may actually be degraded by imposing additional model selection procedures prior to running Maxent! They do suggest that sticking to proximal variables is preferable when projecting models to novel contexts.
+
+I will need to reconsider whether evaluating collinearity is something I should continue to do. In the meantime, I leave the following notes on how to do it:
 
 @MerowEtAl_2013 identify two general approaches to selecting variables.
 The machine learning approach is based on the understanding that the
@@ -194,8 +216,8 @@ that are highly correlated. ENMTools [@WarrenEtAl_2019] provides several
 helper functions for this, including `raster.cor.matrix`,
 `raster.cor.plot`. 
 
-I prefer using `hclust` based on `1 - abs(cor)` to
-visualize correlated groups:
+I prefer using `hclust` based on `1 - abs(cor)` to visualize correlated
+groups:
 
 ```{R libraries, warning = FALSE, message = FALSE, error = FALSE, echo = FALSE, results = FALSE}
 library(raster)     # stack()
@@ -219,7 +241,7 @@ threshold = 0.7  ## the maximum permissible correlation
 
 dists <- as.dist(1 - abs(cors))
 
-clust <- hclust(dists)
+clust <- hclust(dists, method = "single")
 groups <- cutree(clust, h = 1 - threshold)
 
 ## Visualize groups:
@@ -230,7 +252,16 @@ rect.hclust(clust, h = 1 - threshold)
 groups
 ```
 
-After running this, `groups` will identify which cluster each variable belongs to. Keep at most one variable from each group. This doesn't absolutely guarantee that variables in different groups will have correlations less than `threshold`, but in most cases this will be true. When it isn't, the highest inter-group correlation will still be very close to the threshold. If you're concerned, double check the correlations of the variables after you've picked them. 
+**NB** I set the `method` argument to `"single"`. This ensures that all the
+variables with correlations above the threshold will be captured together
+in a cluster. The default method, `"complete"`, creates clusters that may
+include variables with correlations above the specified threshold. See
+discussion of hierarchical agglomerative clustering (section 8.5) in
+@LegendreLegendre_2012 for details, if you want to know more.
+
+After running this, `groups` will identify which cluster each variable belongs to. Keep at most one variable from each group. 
+
+~~This doesn't absolutely guarantee that variables in different groups will have correlations less than `threshold`, but in most cases this will be true. When it isn't, the highest inter-group correlation will still be very close to the threshold. If you're concerned, double check the correlations of the variables after you've picked them.~~ 
 
 Alternatively, you can use `cutree` to select the number of groups you want, then pick a variable from each group. Since this doesn't use a threshold, you'll have to make sure the number of groups you pick is equal to or lower than the number of groups generated using the threshold approach.
 
@@ -244,7 +275,7 @@ groupNum = 3  ## the desired number of groups
 
 dists <- as.dist(1 - abs(cors))
 
-clust <- hclust(dists)
+clust <- hclust(dists, method = "single")
 groups <- cutree(clust, k = groupNum)
 
 ## Visualize groups:
@@ -270,10 +301,18 @@ environmental variables. PCA axes are orthogonal (i.e., not collinear) by
 construction, but interpretation may be tricky if they incorporate a large
 number of variables. 
 
-## Feature Selection
+# Feature Selection
 Features == the statistical models used to fit the variables to the
 response variables (presences). i.e., linear, quadratic, product, hinge,
-threshold, categorical.
+threshold, categorical. 
+
+Note that `hinge` is essentially a superset of linear and threshold
+features, so if you have hinges, the other two are redundant
+[@ElithEtAl_2010a]. As of version 3.4.0, threshold featues are not included
+by default; experience has shown that this improves model performance, and
+produces simpler, more realistic models [@PhillipsEtAl_2017]. Similarly,
+product features appear to contribute very little to model performance,
+given the added complexity.
 
 @MerowEtAl_2013 recommend selecting features on biological grounds. They
 provide a short discussion, noting that the fundamental niche is likely
@@ -293,7 +332,7 @@ ENMTools for these tests, but they've been moved to ENMEval nowadays).
 
 **NB** The `enmeval` function only evaluates AIC for models with an appropriate number of parameters. If you have a low number of observations, a low regularization (i.e., permissive approach to including parameters), and complex/high-parameter models (especially hinge features), the AIC values will be reported as `NA`. These models are overfit, and as such you shouldn't use them with your data. [Explanation on Maxent discussion list.](https://groups.google.com/g/maxent/c/qtMgmZ3Tpz8/m/GHSC8XF2BQAJ)
 
-## Regularization
+# Regularization
 Regularization is used to penalize complexity. Low values will produce
 models with many predictors and features, with 0 leading to all features
 and variables being included. This can lead to problems with over-fitting
@@ -336,22 +375,52 @@ via the options `beta_lqp`, `beta_threshold` etc. [@Phillips_2017],
 although @RadosavljevicAnderson_2014 suggest experiments to explore this
 should be done.
 
-## Output type
-Raw: values are Relative Occurrence Rate (ROR), which will sum to 1 over
-the extent of the study.
+# Output type
+**Raw**: values are Relative Occurrence Rate (ROR) ~~which will sum to 1
+over the extent of the study~~. @MerowEtAl_2013 considers this to be a
+reasonable interperetation of the Maxent output, but the actual values can
+be difficult to interpret; they produce maps that "do not often match
+ecologists' intuition about the distribution of their species"
+[@PhillipsEtAl_2017].
 
-Cumulative: the sum of all cells with <= to the raw value of the cell.
+**Logistic**: attempts to provide an accurate estimate of the probability
+that the species is present, given the environment. Monotonically related
+to raw values; site rank is identical for these measures. Based on the
+assumption that there is a 50% probability that a species will be present
+at a site with 'average' conditions for the species. This assumption is
+problematic and unrealistic according to @MerowEtAl_2013. However,
+@ElithEtAl_2010a prefer logistic output, and discuss justification for
+preferring it over raw values.
+
+**Cumulative**: the sum of all cells with <= to the raw value of the cell.
 Rescaled to range from 0-100.
 
-Logistic: Not sure what this actually means.
+**Complementary Log-Log** (aka CLOGLOG): the standard output from version
+3.4.0 onwards. Generally similar to the logistic output, but tending to
+give slightly higher values. There is a stronger theoretical justification
+for CLOGLOG than logistic, as summarized in @PhillipsEtAl_2017. CLOGLOG
+provides an estimate of the probability of presence, but with the caveat
+that this probability is based on an arbitrary quadrat size (similar to the
+prevalence assumption made with logistic).
 
-@MerowEtAl_2013 recommends sticking to Raw whenever possible, which means using the
-same species in the same extent. Note that the raw values will change for
-different extents, even for identical models, so they can't be compared
-across projections without additional post-processing.
+@MerowEtAl_2013 recommends sticking to Raw whenever possible, which means
+using the same species in the same extent. Note that the raw values will
+change for different extents, even for identical models, so they can't be
+compared across projections without additional post-processing.
 
-## Evaluation
-### AUC
+Cumulative is preferable when defining/describing range boundaries, or
+otherwise dealing with omission rates.
+
+@ElithEtAl_2010a prefer to use the logistic, which they present as a
+biologically reasonable estimate. However, it will be a problem in
+comparisons among species with different prevalence on the landscape, as it
+assumes identical (and arbitrary) prevalence.
+
+Following [@PhillipsEtAl_2017], CLOGLOG now seems to be the most intuitive
+output to use in most cases.
+
+# Evaluation
+## AUC
 
 AUC assesses the success of the model in correctly ranking a random
 background point and a random presence point; that is, it should predict
@@ -380,7 +449,19 @@ reflects the degree to which the model is over-fit on the training data. In
 other words, the extent to which the model is fit to noise in the data, or
 environmental bias, if geographic masking is used in the k-fold partitions. 
 
-### Boyce
+## Boyce
+
+@BoyceEtAl_2002 proposed an index that compares the predicted and expected number of occupied sites with the suitability value of those sites:
+
+- sites are first sorted from lowest to highest suitability
+
+- then they are binned into groups of equal frequency
+
+- the number of actual occurrences for each bin are tabulated
+
+- the Spearman-rank correlation between bin rank and occurrence number
+  is then calculated; if the model is good, we expect increasing numbers of
+  occurrences for higher-ranked bins
 
 @HirzelEtAl_2006 evaluated a variety of sdm evaluation measures; on data
 sets with more than 50 presences, most evaluators had > 0.70 correlation
@@ -392,7 +473,7 @@ This can be calculated with the function `ecospat::boyce()`, which takes a
 raster of suitability values and a matrix or data.frame containing the
 coordinates of presences.
 
-### Thresholds
+## Thresholds
 
 @RadosavljevicAnderson_2014 Threshold-dependent evaluation requires
 identifying a threshold in values predicted by the model to generate a
@@ -418,7 +499,7 @@ ability). When more than one regularization multiplier fulfilled these
 criteria equally well, we chose the lowest one, to promote discriminatory
 ability (and hence, counter any tendency towards underfitting)."
 
-### Cross-validation
+## Cross-validation
 
 @RadosavljevicAnderson_2014 evaluated cross-validation using random k-fold
 partitions, geographical structuring, and geographic masking of partitions.
@@ -444,7 +525,7 @@ implemented it looks like they only allow for 2-fold and 4-fold
 cross-validation. I'm not sure there's any reason not to use checkerboards
 to do 9- or 16- fold cross validation?
 
-### Spatial Null Models
+## Spatial Null Models
 Not often used, but see @Rodriguez-ReyEtAl_2013, and discussion of
 @BahnMcGill_2007.
 
@@ -457,7 +538,7 @@ proportional to the distance of that location from known occurences).
 `geoDist` returns a raster of 'suitability' values that can be evaluated
 just as the output from an SDM model projection.
 
-## Projection
+# Projection
 Complex models, with large numbers of predictors, or that use complex features, are more likely to be overfit. Overfitting sacrifices generality (i.e., capacity to project to different scenarios) in favour of better fit to training data. Consequently, for the purposes of projection, we may want to emphasize smaller, simpler models. See also @PetitpierreEtAl_2017 for discussion of variable selection.
 
 @GuisanEtAl_2017: two related issues to consider when comparing the environment in the training region to that in the region into which the model is projected:
@@ -472,27 +553,27 @@ The act of projection implicitly assumes environments are fully analagous with e
 
 This is to a large extent unavoidable, so we have to take measures to reduce it in data preparation, and/or account for it in interpretation of results.
 
-### Clamping
+## Clamping
 Maxent includes the option of "clamping" projections. This constrains the values for environmental values in the projected range to the limit of that variable that is found in the training range. This has the effect of setting the predicted value of all non-analog cells to the value for the most extreme environments that are found in the training region.
 
 This will reduce the occurence of unrealistic patterns emerging from the extension of complex models beyond the range of values they were trained on. It's probably better than not clamping, but no reason to expect it's particularly realistic.
 
 @GuisanEtAl_2017 doesn't mention clamping at all. Instead, they recommend explicitly identifying non-analog environments and excluding them from the projection; or at least, identifying them clearly and giving them due consideration in the interpretation of the results.
 
-### MESS
+## MESS
 Multivariate Environmental Similarity Surfaces, @ElithEtAl_2010, provide a way to identify non-analog environments, and to quantify the extent to which they differ from environments in the training area. The functions `dismo::mess` and `ecospat::ecospat.mess` can be used to calculate MESS values. MESS is typically applied in geographic space.
 
-### COUE
+## COUE
 @BroennimannEtAl_2012 presents and approach to contrast environmental conditions between training and projection regions in E-space. E-space and G-space provide complementary views of the niche. E-space shows the environmental distribution of a species in the context of all possible environmental combinations; G-space shows the geographic distribution of the species, constrained to environmental conditions that actually exist in the landscape. This analysis applies the `COUE` framework (centroid, overlap, underfilling and expansion). 
 
 `ecospat` [@ColaEtAl_2017] provides all the functions necessary to implement these analyses.
 
-### Climate Models
+## Climate Models
 > Climate projections are not predictions of future conditions—they are model-derived descriptions of possible future climates under a given set of plausible scenarios of climate forcings. The intention of simulating future climate is not to make accurate predictions regarding the future state of the climate system at any given point in time but to represent the range of plausible futures and establish the envelope that the future climate could conceivably occupy.
 
 -- @HarrisEtAl_2014
 
-#### Recommendations
+### Recommendations
 From @HarrisEtAl_2014 (originally presented as 9 points):
 
 1. Include a high and a low emissions scenario, to capture 'best-case' and
@@ -547,12 +628,12 @@ From @HarrisEtAl_2014 (originally presented as 9 points):
 6. Maintain a dialog with climate modelers, to keep up-to-date with
    developments in climate models.
 
-#### WorldClim
+### WorldClim
 [WorldClim 2.1](https://worldclim.org/data/cmip6/cmip6climate.html) has CMIP6 data: 9 GCMs for four SSP, at resolutions down to 2.5 minutes (30 seconds overdue for release in March 2020), projected to 2040, 2060, 2080 and 2100.
 
 [WorldClim 1.4](https://worldclim.org/data/v1.4/cmip5.html) has CMIP5 data: 19 GCMs, four RCP, projected to 2050 and 2070, at resolutions as low as 30 seconds.
 
-#### Definitions
+### Definitions
 
 AR
 : **Assessment Report** for the IPCC. AR4 was released in 2007, AR5 in
@@ -584,7 +665,7 @@ SRES / RCP / SSP
   mitigation (best case); RCP8.5/SSP 585 is ~current trajectory (worst
   case)
 
-#### Downscaling
+### Downscaling
 GCMs have a native resolution in the range of 50-250km^2^, much coarser than what is used for SDMs. To use for model projections, we need to downscale them to the appropriate scale. Three options:
 
 Dynamic Downscaling
@@ -603,10 +684,10 @@ Simple Scaling
 : break coarse pixels up into smaller pixels containing the same value as
   the parent; doesn't create any new values, or introduce any error.
 
-## Ensembles
+# Ensembles
 TODO
 
-## TO-READ
+# TO-READ
 
 Boria, R. A. et al. 2014. Spatial filtering to reduce sampling bias can
 improve the performance of ecological niche models. – Ecol. Model. 275:
