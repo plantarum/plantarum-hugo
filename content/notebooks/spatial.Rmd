@@ -3,11 +3,8 @@ categories:
 - notebooks
 excerpt: Notes on Spatial PCA, MULTISPATI and Co-Inertia Analysis
 tags:
-- review
-- ordination
 - multivariate
-- statistics
-- landscape
+- spatial
 title: Spatial Ordinations
 slug: spatial-ordination
 output:
@@ -16,7 +13,7 @@ output:
 bibliography: ../plantarum.bib
 link-citations: true
 date: 2020-07-24
-updated: 2020-10-30
+updated: 2021-01-03
 ---
 # Spatial Statistics
 ## Moran's `I`

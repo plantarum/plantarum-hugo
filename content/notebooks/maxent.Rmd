@@ -2,11 +2,10 @@
 categories:
 - notebooks
 excerpt: Best practices for building Maxent models
-updated: 2020-11-03
+updated: 2021-01-25
 tags:
 - sdm
-- review
-- literature
+- spatial
 title: Maxent Best Practices
 slug: maxent
 output:
@@ -20,13 +19,29 @@ link-citations: true
 
 # Key Resources
 
-@MerowEtAl_2013 provides a very thorough introduction to Maxent modeling, and especially to what the various settings mean and how to set them.
+@MerowEtAl_2013 provides a very thorough introduction to Maxent modeling,
+and especially to what the various settings mean and how to set them.
 
-[RSpatial](https://rspatial.org/) is a (nearly complete) set of lessons covering spatial data analysis in R, and including good tutorials for Maxent and other SDM approaches.
+[RSpatial](https://rspatial.org/) is a (nearly complete) set of lessons
+covering spatial data analysis in R, and including good tutorials for
+Maxent and other SDM approaches.
 
-[Best Practices in Species Distribution Modeling in R](http://www.earthskysea.org/best-practices-in-species-distribution-modeling-a-workshop-in-r/) is another set of online notes. I haven't reviewed them yet, but it looks very promising.
+[Best Practices in Species Distribution Modeling in
+R](http://www.earthskysea.org/best-practices-in-species-distribution-modeling-a-workshop-in-r/)
+is another set of online notes. I have reviewed them briefly, and they look to be very thorough.
 
-From the same author (Adam B. Smith), a [webinar on using herbarium data in ecology, evolution and conservation](http://www.earthskysea.org/museum-herbarium-data/), and a [database of biodiversity databases](https://docs.google.com/spreadsheets/d/1qsK1MNLsi-QjK9VptgeV2HfrB7mWUVxjZdaj_P9Qs-Y/edit#gid=975168115).
+From the same author (Adam B. Smith), a [webinar on using herbarium data in
+ecology, evolution and
+conservation](http://www.earthskysea.org/museum-herbarium-data/), and a
+[database of biodiversity
+databases](https://docs.google.com/spreadsheets/d/1qsK1MNLsi-QjK9VptgeV2HfrB7mWUVxjZdaj_P9Qs-Y/edit#gid=975168115).
+
+Another workshop, from Lee-Yaw, is available on
+[github](https://github.com/jullee/UBC-ENM-Workshop-Fall-2016). It's a
+little old now, and doesn't appear to be as comprehensive as Smith's
+workshop above (maybe?). However, some people may prefer the more condensed
+format. Both authors have demonstrated expertise in the subject, so I don't
+doubt that these are both reliable sources.
 
 ## Technical Summaries
 

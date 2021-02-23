@@ -3,7 +3,7 @@ categories:
 - tutorials
 excerpt: "Plotting Simple Maps in R"
 date: "2020-10-30"
-updated: 2020-11-02
+updated: 2021-02-22
 tags: 
 - R
 - maps
@@ -19,7 +19,7 @@ link-citations: true
 See the [RSpatial
 tutorial](https://rspatial.org/raster/spatial/6-crs.html#notation) for a
 more detailed introduction/overview of using R for GIS/spatial analysis.
-THe following tutorial walks through some common plotting tasks I use for
+The following tutorial walks through some common plotting tasks I use for
 distribution models.
 
 ```{R prep, echo = FALSE}
@@ -45,7 +45,8 @@ canada <- getData("GADM", country = "CAN", level = 1,
                  path = "./data/maps")
 ```
 
-These maps can be plotted directly with the `plot` command. If you want to combine them, use the `add = TRUE` argument to the second `plot` call:
+These maps can be plotted directly with the `plot` command. If you want to
+combine them, use the `add = TRUE` argument to the second `plot` call:
 
 ```{R map plots}
 plot(us)
@@ -58,7 +59,8 @@ You can combine multiple vector maps into a single map with `bind`:
 na <- bind(us, canada)
 ```
 
-These maps are 'unprojected', meaning they are plotted in latitude/longitude degrees. That makes it easy to set the plot boundaries:
+These maps are 'unprojected', meaning they are plotted in
+latitude/longitude degrees. That makes it easy to set the plot boundaries:
 
 ```{R zooming a map}
 plot(na, xlim = c(-100, -50), ylim = c(30, 60))

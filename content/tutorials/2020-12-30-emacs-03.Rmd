@@ -1,11 +1,10 @@
 ---
-categories: 
+Categories: 
 - tutorials
 excerpt: "Emacs for Bioinformatics: R and ESS"
 date: "2020-12-30"
 tags: 
 - emacs
-- programming
 - bioinformatics
 - R
 title: "Emacs for Bioinformatics #3: R and ESS"
@@ -46,7 +45,7 @@ roughly the same meaning as "plugins" or "extensions" in other software
 systems).
 
 If you aren't already using MELPA, you need to add it to your configuration
-file (typically `~/.emacs.d/init.el`, or `.emacs`):
+file (typically `~/.emacs.d/init.el`, or `~/.emacs`):
 
 ```{elisp, eval = FALSE}
 (require 'package)

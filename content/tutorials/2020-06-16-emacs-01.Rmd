@@ -5,7 +5,6 @@ excerpt: "Emacs for Bioinformatics, Getting Started"
 date: "2020-06-16"
 tags: 
 - emacs
-- programming
 - bioinformatics
 title: "Emacs for Bioinformatics: Getting Started"
 slug: emacs-tutorial-01
@@ -24,9 +23,9 @@ One last caveat: I work on Linux, and so the examples here will assume you are t
 
 # Objectives
 - Create a new bash shell script:
-   - write the code
-   - run the code in a shell
-   - save the results
+    - write the code
+    - run the code in a shell
+    - save the results
 
 More importantly, by the end of this quick example, I hope you'll see that Emacs, while a little weird, isn't *that* different from more conventional programs. And if I can convince you of that, then we'll be ready to explore some of the more useful features it has for us.
 

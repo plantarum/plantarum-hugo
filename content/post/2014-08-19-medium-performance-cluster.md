@@ -2,7 +2,7 @@
 title: "Medium Performance Cluster Computing"
 categories: code
 excerpt: "Set up a temporary computing cluster on a Digital Ocean VPS"
-tags: [programming, linux, GRASS, gis, R]
+tags: [linux, GRASS, gis, R]
 date: 2014-08-19
 ---
 

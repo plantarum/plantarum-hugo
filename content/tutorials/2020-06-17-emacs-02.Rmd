@@ -5,7 +5,6 @@ excerpt: "Emacs for Bioinformatics: Orgmode"
 date: "2020-06-17"
 tags: 
 - emacs
-- programming
 - bioinformatics
 - orgmode
 title: "Emacs for Bioinformatics #2: Orgmode"
@@ -21,9 +20,9 @@ Last time, I promised a better way to integrate scripts, output, and notes in a 
 
 # Objectives
 - Create a new org file with:
-   - text notes
-   - Bash code blocks
-   - the results of executing the code blocks
+    - text notes
+    - Bash code blocks
+    - the results of executing the code blocks
 
 # Setting Up
 First off, we need to create a new file. We do this from the menu "File - Visit New File" option. Name it `gbs.org`, and put it in the directory we created last time: `~/gbs-analysis`.
