@@ -9,6 +9,7 @@ enableEmoji = true
 
 [permalinks]
     post = "/:year/:month/:day/:slug/"
+    tutorials = "/:year/:month/:day/:slug/"
 
 [[menu.main]]
     name = "Notebooks"
@@ -47,3 +48,8 @@ enableEmoji = true
 
     [params.icon]
     url = "favicon.ico"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
