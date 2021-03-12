@@ -2,7 +2,7 @@
 categories:
 - notebooks
 excerpt: Best practices for building Maxent models
-updated: 2021-01-25
+updated: 2021-03-11
 tags:
 - sdm
 - spatial
@@ -466,7 +466,8 @@ environmental bias, if geographic masking is used in the k-fold partitions.
 
 ## Boyce
 
-@BoyceEtAl_2002 proposed an index that compares the predicted and expected number of occupied sites with the suitability value of those sites:
+@BoyceEtAl_2002 proposed an index that compares the predicted and expected
+number of occupied sites with the suitability value of those sites:
 
 - sites are first sorted from lowest to highest suitability
 
@@ -487,6 +488,9 @@ Boyce index (which uses presence-only data) performed best.
 This can be calculated with the function `ecospat::boyce()`, which takes a
 raster of suitability values and a matrix or data.frame containing the
 coordinates of presences.
+
+Related discussion in @PhillipsElith_2010, who note that the Boyce index is
+an example of their presence-only calibration plot (POC plot).
 
 ## Thresholds
 

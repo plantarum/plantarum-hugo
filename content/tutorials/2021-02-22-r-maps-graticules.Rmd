@@ -3,7 +3,7 @@ categories:
 - tutorials
 excerpt: "Adding Graticules to Maps in R"
 date: "2021-02-22"
-updated: 2021-02-22
+updated: 2021-02-23
 tags: 
 - R
 - maps
@@ -109,6 +109,11 @@ plot(st_geometry(na.la), xlim = c(-500000, 2000000),
 
 We can add layers just as we did in the previous post:
 
+```{R plotting the great lakes demo, eval = FALSE}
+gl.la <- st_transform(greatlakes, laea)
+plot(st_geometry(gl.la), col = 'lightblue', add = TRUE)
+```
+
 ```{R plotting the great lakes for real, echo = FALSE}
 plot(st_geometry(na.la), xlim = c(-500000, 2000000),
      ylim = c(-400000, 2100000))
@@ -117,10 +122,6 @@ gl.la <- st_transform(greatlakes, laea)
 plot(st_geometry(gl.la), col = 'lightblue', add = TRUE)
 ```
 
-```{R plotting the great lakes demo, eval = FALSE}
-gl.la <- st_transform(greatlakes, laea)
-plot(st_geometry(gl.la), col = 'lightblue', add = TRUE)
-```
 
 You can also mix `sf` and `Spatial*` objects on the same plot, as long as
 they're in the same projection.

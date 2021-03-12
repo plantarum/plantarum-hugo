@@ -1,17 +1,26 @@
 ---
 title: "Botanical macros from Mer Bleue"
-modified:
-categories: botany
+updated: 2021-02-23
 excerpt: My first images of the season
-tags: [photography]
+tags:
+- botany
+- photography
 date: 2013-04-28
 ---
 
 ![*Acer rubrum* male flowers shedding pollen](/images/Acer_rubrum_TWS2534-crop-1024x677.jpg "*Acer rubrum* male flowers shedding pollen")
 
-It hit 23 Celsius in Ottawa today, so I packed my camera and headed out to ![Mer Bleue](http://www.canadascapital.gc.ca/places-to-visit/greenbelt/mer-bleue) for my first photo trek of the season. It'll be another week or so before the spring wildflowers get into full swing, but I came back with a great preview.
+It hit 23 Celsius in Ottawa today, so I packed my camera and headed out to [Mer Bleue](http://www.canadascapital.gc.ca/places-to-visit/greenbelt/mer-bleue) for my first photo trek of the season. It'll be another week or so before
+the spring wildflowers get into full swing, but I came back with a great
+preview.
 
-Red maple flowers before the leaves come out, giving the tree a red halo that it quite striking against the bare branches. Silver maple, *Acer saccharinum*, flowers are similar, but yellow-green rather than red. They bloom about a week earlier, but their season is long enough allow for occasional hybrids to form. The male and female flowers are usually on separate branches, and young trees may have only one sex or the other. These blooms were on the big tree at the start of the Mer Bleue boardwalk.
+Red maple flowers before the leaves come out, giving the tree a red halo
+that it quite striking against the bare branches. Silver maple, *Acer
+saccharinum*, flowers are similar, but yellow-green rather than red. They
+bloom about a week earlier, but their season is long enough allow for
+occasional hybrids to form. The male and female flowers are usually on
+separate branches, and young trees may have only one sex or the other.
+These blooms were on the big tree at the start of the Mer Bleue boardwalk.
 
 ![<em>Acer rubrum</em> anthers](/images/Acer_rubrum_TWS2531-despecked-678x1024.jpg)
 
