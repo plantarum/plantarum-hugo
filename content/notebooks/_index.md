@@ -3,7 +3,6 @@ categories:
 - notebooks
 excerpt: Tyler's Research Notebooks
 tags:
-- anti-racism
 title: Notebooks
 slug: notebooks
 bibliography: ../plantarum.bib

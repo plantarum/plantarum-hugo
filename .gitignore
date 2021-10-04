@@ -3,3 +3,5 @@
 /themes/
 /static/notebooks/
 /static/tutorials/
+.DS_Store
+Thumbs.db
