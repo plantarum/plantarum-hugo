@@ -1,0 +1,344 @@
+---
+layout: post
+categories: 
+- tutorials
+excerpt: "Ecospat Analysis Workflow"
+date: "2021-07-29"
+tags: 
+- R
+- sdm
+title: "Niche Quantification with Ecospat"
+slug: ecospat
+bibliography: ../../plantarum.bib
+link-citations: true
+---
+
+```{R init, echo = FALSE}
+library(utils) 
+library(graphics)
+library(grDevices)
+library(stats)
+```
+
+The `ecospat` package [@ColaEtAl_2017] provides code to quantify and
+compare the environmental and geographic niche of two species, or of the
+same species in different contexts (e.g., in its native and invaded
+ranges). The included vignette explains how to do such analyses. 
+
+However, the vignette assumes you already have a matrix of occurrence
+records, along with the climate data for each of those records. In our
+work, we typically have to construct those matrices from observation data
+(herbarium records, iNaturalist observations, etc) and climate rasters
+[e.g. @FickHijmans_2017]. This short tutorial will walk through the steps
+necessary to do this.
+
+# Packages
+
+In addition to `ecospat`, we'll use `raster` [@Hijmans_2021] to download
+WorldClim [@FickHijmans_2017] rasters, and manipulate the spatial data; 
+`rgbif` [@ChamberlainEtAl_2021] to download GBIF records, and `maptools`
+[@BivandLewin-Koh_2021] to get a world basemap for plots.
+
+```{R libraries, results = "hide", warning = FALSE, message = FALSE}
+library(ecospat)
+library(raster)
+library(rgbif)
+library(maptools)
+```
+
+**NB** there is a [bug in
+ecospat](https://github.com/ecospat/ecospat/issues/18) that prevents us
+from using the argument `geomask` (see below). This has been fixed, but as
+of 2021-07-29, the bug fix has not made it into the released package,
+currently version 3.2. Consequently, you need to install directly from the
+development sources:
+
+```{R install-ecospat, eval = FALSE}
+library(devtools)
+install_github(repo = "ecospat/ecospat/ecospat")
+```
+
+Presumably this won't be necessary for versions 3.3+ or newer (once
+released). 
+    
+# Getting Data
+
+We'll start by sourcing our data. For observations, let's take a look at
+Purple Loosestrife, a wetland species that is native to Europe, and
+invasive in North America. For actual research work, I normally download
+the files directly from GBIF, and examine them carefully to check for
+errors or missing data. For this demo we'll use the `rgbif` package to
+download the data directly into R, and we'll assume there are no problems. 
+
+```{R lythrum-download, eval = FALSE}
+lsGBIF <- occ_search(scientificName = "Lythrum salicaria",
+                    limit = 10000,
+                    basisOfRecord = "Preserved_Specimen",
+                    hasCoordinate = TRUE,
+                    fields = c("decimalLatitude",
+                               "decimalLongitude", "year",
+                               "country", "countryCode"))
+
+save(lsGBIF, file = "../data/2021-07-29-ls-gbif-recs.Rda")
+```
+
+This returned an object with 7969 records. I saved that locally, so that
+I'm not making GBIF search their database everytime I work on this demo.
+
+```{R lythrum-load}
+load("../data/2021-07-29-ls-gbif-recs.Rda")
+lsOccs <- lsGBIF$data
+```
+
+`lsGBIF$data` is the table with the actual records in it. That's what we'll
+be working with. The other components of `lsGBIF` are metadata related to
+the original GBIF search. That's useful to have, but not needed for the
+rest of this example.
+
+Next, we tell R which columns are the coordinates, which allows us to map
+the observations. This also converts our observation matrix to a
+`SpatialPointsDataFrame` object.
+
+```{R lythrum-map, fig.width = 7, fig.height = 4}
+coordinates(lsOccs) <- c("decimalLongitude",
+                        "decimalLatitude") 
+data(wrld_simpl) # load the maptools worldmap
+
+par(mar = c(0,0, 0, 0))
+plot(wrld_simpl, border = "gray80")
+points(lsOccs, pch = 16, col = 2, cex = 0.3)
+```
+
+To get our climate data, we can use raster's `getData` function. The first
+time you call this function in a directory, it downloads the data from the
+internet, and saves it locally. Subsequent calls will load your local copy
+of the data, to speed things up. I'm using the coarsest resolution (10
+minutes) to speed things up for this demonstration: 
+
+```{R climate-download}
+wclim <- getData("worldclim", var = "bio", res = 10,
+                path = "../data")
+```
+
+We can take a look at one layer:
+
+```{R climate-plot, fig.width = 7, fig.height = 4}
+par(mar = c(0,0, 3, 1))
+plot(wclim[["bio1"]], main = "bio1")
+```
+
+Next, we need to extract the environmental values from the climate rasters
+for each of our observation records:
+
+```{R extract-worldclim}
+lsOccs <- cbind(lsOccs, extract(wclim, lsOccs))
+```
+
+In the process of extracting `wclim` values for our observations, we
+usually end up with a few missing values. This is a consequence of
+mismatches between the observation coordinates and the climate rasters. In
+some cases, the observations are placed off the coast in the ocean, or in
+another area where there is no climate data available. We need to exclude
+these missing values from our analysis.
+
+```{R remove-NA}
+lsOccs <- lsOccs[complete.cases(data.frame(lsOccs)), ]
+```
+
+# Splitting Data
+
+At this point, all the data we need for the Niche Quantification analysis
+is in `lsOccs` and `wclimMat`. We need to split this data into native and
+invasive regions for our comparison. We'll restrict ourselves to the
+northern hemisphere north of 20 degrees, and consider all records from
+Eurasia as native, and all records from North America as invasive.
+
+I've created extents to cover the rough outlines of the areas in question.
+In practice, you could use a more carefully constructed vector map to split
+your data.
+
+```{R splitting, fig.height = 3, fig.width = 7}
+## North America: na
+## Longitude from 40 to 180W, Latitude from 20 to 90N
+naExt <- extent(c(-180, -40, 20, 90))
+lsNA <- crop(lsOccs, naExt)
+
+## Eurasia: ea
+## Longitude from 40W to 180E, Latitude from 20 to 90N
+eaExt <- extent(c(-40, 180, 20, 90))
+lsEA <- crop(lsOccs, eaExt)
+
+par(mar = c(1, 0, 0, 0))
+plot(wrld_simpl, ylim = c(20, 80), axes = FALSE)
+points(lsNA, pch = 16, col = 'red', cex = 0.5)
+points(lsEA, pch = 16, col = 'darkgreen', cex = 0.5)
+```
+
+For the Niche Quantification, we need to have a matrix with the background
+environment present in the native and invasive ranges, as well as the
+complete global environmental including the combined extent of the native and
+introduced environments. After cropping, we use `getValues` to convert the
+raster to a dataframe.
+
+```{R global-enviroment}
+## Crop Climate Layers:
+naEnvR <- crop(wclim, naExt)
+eaEnvR <- crop(wclim, eaExt)
+
+## Extract values to matrix:
+naEnvM <- getValues(naEnvR)
+eaEnvM <- getValues(eaEnvR)
+
+## Clean out missing values:
+naEnvM <- naEnvM[complete.cases(naEnvM), ]
+eaEnvM <- eaEnvM[complete.cases(eaEnvM), ]
+
+## Combined global environment:
+globalEnvM <- rbind(naEnvM, eaEnvM)
+```
+
+# Niche Quantification
+## PCA
+The Niche Quantification analysis starts with a Principal Components
+Analysis of the environmental data. The actual ordination uses the global
+data, with the observation records and the native and invasive background
+environment treated as supplemental rows.
+
+```{R pca}
+pca.clim <- dudi.pca(globalEnvM, center = TRUE,
+                    scale = TRUE, scannf = FALSE, nf = 2)
+global.scores <- pca.clim$li
+
+nativeLS.scores <-
+  suprow(pca.clim,
+         data.frame(lsEA)[, colnames(globalEnvM)])$li   
+invasiveLS.scores <-
+  suprow(pca.clim,
+         data.frame(lsNA)[, colnames(globalEnvM)])$li
+
+nativeEnv.scores <- suprow(pca.clim, naEnvM)$li
+invasiveEnv.scores <- suprow(pca.clim, eaEnvM)$li
+```
+
+Let's break that down. `dudi.pca` does a PCA analysis on `globalEnvM`,
+which is a matrix of all the environmental variables over the entire study
+area. We use that to create a two-dimensional summary of the total
+environmental variability.
+
+Next, we map our observation data (`lsEA` and `lsNA`) into that
+2-dimensional ordination, using the `suprow` function. `lsEA` and `lsNA`
+are `SpatialPointsDataFrame` objects. Sometimes you can treat them as if
+they were data.frames, but other times you need to explicity convert them.
+This is one of those times, hence I've wrapped them in `data.frame()`.
+
+Recall that `lsEA` and `lsNA` have more columns than the environmental
+matrix: they also include `year`, `countryCode`, `country`. We only want to
+include the environmental variables when you project the observations into
+the ordination. To make sure that we use the same variables as in the
+original ordination of `globalEnvM`, in the same order, I select the
+columns explicitly to match that object:
+
+```{R, eval = FALSE}
+data.frame(lsEA)[, colnames(globalEnvM)]
+```
+
+The output of `dudi.pca` and `suprow` includes a lot of information that we
+aren't using here. We only need the `li` element, so I've selected that
+from each of the function outputs.
+
+## Occurence Densities Grid
+
+Finally we're ready to do the Niche Quantification/Comparisons. We'll use
+the PCA scores for the global environment, the native and invasive
+environments, and the native and invasive occurrence records. 
+
+```{R grid.clim.dyn}
+nativeGrid <- ecospat.grid.clim.dyn(global.scores,
+                                   nativeEnv.scores,
+                                   nativeLS.scores)
+
+invasiveGrid <- ecospat.grid.clim.dyn(global.scores,
+                                   invasiveEnv.scores, 
+                                   invasiveLS.scores)
+
+ecospat.plot.niche.dyn(nativeGrid, invasiveGrid,
+                       quant = 0.05) 
+```
+
+The resulting plot shows us the environmental conditions present in Eurasia
+(inside the green line) and North America (inside the red line). The green
+area represents environments occupied by *Lythrum salicaria* in Eurasia,
+but not in North America, the red area shows environments occupied in North
+America and not Eurasia, and the blue area shows environments occupied in
+both ranges. We can also see that there are a few areas in Eurasia with
+environments not present in North America, and vice versa. However, for the
+most part, *Lythrum salicara* doesn't occur in this environments (except
+for a tiny bit of green in the center of the plot).
+
+# Geographic Comparisons
+
+You can also apply this analysis to geographic locations, instead of
+environmental conditions. This won't make much sense for native vs invaded
+range comparisons, but it could be useful for comparing different species
+within the same area. 
+
+To demonstrate, let's compare the distribution of *Lythrum salicaria* in
+North America before and after 1950. We use geographic coordinates here, so
+no need for a PCA. We do need to generate the 'background' coordinates.
+I'll use `expand.grid` to create the locations for this. I've broken up the
+NA extent into 500 x 500 grids.
+
+```{R temporal}
+lsNAearly <- subset(lsNA, year <= 1950)
+lsNAlate <- subset(lsNA, year > 1950)
+geoGrid <- expand.grid(longitude =
+                        seq(-160, -40, length.out = 500),
+                      latitude =
+                        seq(20, 90, length.out = 500))
+
+earlyGeoGrid <- ecospat.grid.clim.dyn(geoGrid, geoGrid,
+                                     coordinates(lsNAearly))
+
+lateGeoGrid <- ecospat.grid.clim.dyn(geoGrid, geoGrid,
+                                    coordinates(lsNAlate))
+
+ecospat.plot.niche.dyn(earlyGeoGrid, lateGeoGrid, quant = 0)
+plot(wrld_simpl, add = TRUE)
+```
+
+This looks pretty good. However, `ecospat` uses a kernel density formula to
+model the occurence distributions. As a consequence, it projects out into
+the ocean, which isn't very realistic. To correct this, we need to mask the
+analysis to the continental land mass. This requires we have a vector map
+of the desired area. I'll combine the US, Canada, and Mexico polygons from
+`wrld_simpl` for this purpose. 
+
+```{R masked-geography}
+naMask <- bind(subset(wrld_simpl, NAME == "Canada"),
+              subset(wrld_simpl, NAME == "United States"),
+              subset(wrld_simpl, NAME == "Mexico"))
+
+earlyGeoGrid <- ecospat.grid.clim.dyn(geoGrid, geoGrid,
+                                     coordinates(lsNAearly),
+                                     geomask = naMask)
+
+lateGeoGrid <- ecospat.grid.clim.dyn(geoGrid, geoGrid,
+                                    coordinates(lsNAlate),
+                                    geomask = naMask)
+
+ecospat.plot.niche.dyn(earlyGeoGrid, lateGeoGrid, quant = 0)
+plot(wrld_simpl, add = TRUE)
+```
+
+That gives more reasonable results.
+
+# Summary
+
+This is a fairly quick overview of this workflow. You'll almost certainly
+want to consider thinning your observations, among other data cleaning
+procedures. I've also set the study extent very crudely. That might be
+appropriate for very large scale (global) studies. But you'll usually want
+to think a bit more carefully about how you set your extent. The way you
+process your data will also differ depending on your context.
+
+# References

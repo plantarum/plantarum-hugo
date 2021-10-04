@@ -1,0 +1,154 @@
+---
+categories:
+- notebooks
+excerpt: Processing GBS data with STACKS
+tags:
+- gbs
+title: Processing GBS data with STACKS
+slug: stacks-gbs
+output:
+  blogdown::html_page:
+    toc: true
+bibliography: ../plantarum.bib
+link-citations: true
+draft: TRUE
+date: 2021-03-15
+---
+
+```{R prep, echo = FALSE}
+library(utils)
+library(graphics)
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+# Demultiplexing: process_radtags
+[process_radtags](http://catchenlab.life.illinois.edu/stacks/comp/process_radtags.php):
+
+## Options
+
+p 
+: path to directory with input files
+
+1
+: read 1 file (if not using `p`)
+
+2
+: read 2 file (if not using `p`)
+
+o 
+: path to output files
+
+b ./indices.csv
+: path to index file
+
+inline_null 
+: barcode is inline with read 1; no barcode on read 2
+
+e pstI 
+: restriction enzyme used on read 1
+
+renz_1 pstI
+: same as `e` (one or the other)
+
+renz-2 mspI
+: restriction enzyme used on read 2
+
+r, --rescue 
+: rescue barcodes and RAD-Tags (fix minor sequencing errors)
+
+c, --clean
+: clean data, remove reads with an uncalled base
+
+q, --quality 
+: quality; discard reads with low quality
+
+P 
+: input files are Paired
+
+i gzfastq 
+: input format
+
+
+## Quality checks
+
+The log file includes a table with read counts per sample. Extract it with
+awk (or your favourite text-munging tool):
+
+
+```{bash}
+ ## collect from the first line of the table to the empty line that follows it:
+awk '$1 == "Barcode" && $2 == "Filename",/^$/' process_radtags.Plate1.log > pr-logPlate1.csv
+```
+
+```{R process_radtags_check}
+setwd("~/nextcloud/simon")
+
+ ## Three separate plates with different samples in each:
+plate1 <- read.table("pr-logPlate1.csv", header = TRUE)
+plate2 <- read.table("pr-logPlate2.csv", header = TRUE)
+plate3 <- read.table("pr-logPlate3.csv", header = TRUE)
+procRad <- rbind(plate1, plate2, plate3)
+procRadOrder <- procRad[order(procRad$Total, decreasing = TRUE), ]
+
+barplot(procRadOrder$Total, border = NA, space = 0)
+barplot(procRadOrder$Retained, border = NA, space = 0, 
+        col = "grey90", add = TRUE)
+legend(col = c("grey", "grey90"), x = "topright", 
+       legend = c("Total", "Retained"), pch = 15, 
+       pt.cex = 1.5, bty = "n")
+
+medRetained <- median(procRadOrder$Retained)
+abline(h = medRetained, col = "white", lwd = 3)
+abline(h = medRetained, col = "grey90", lwd = 2)
+text(x = 1, y = medRetained,
+     paste("Median Retained Reads: ", medRetained),
+     pos = 4)
+
+```
+
+```{R retained-reads}
+quantile(procRad$Retained, probs = c(0.05, 0.10, 0.25, 0.5,
+                                     0.75, 0.9, 0.95))
+```
+
+10 worst samples:
+```{R worst-samples}
+procRadOrder[nrow(procRadOrder):(nrow(procRadOrder) - 10),
+             c("Filename", "Retained")]
+```
+
+10 best samples:
+```{R worst-samples}
+procRadOrder[1:10, c("Filename", "Retained")]
+```
+
+
+
+# ustacks
+
+Output summary stats are printed to screen by default, which isn't very
+helpful. You will want to pipe that into a log file so you can refer to it
+later. 
+
+# gstacks
+
+Calculates depth of coverage stats, stores them in `gstacks.log`:
+
+```
+Attempted to assemble and align paired-end reads for 2414622 loci:
+  0 loci had no or almost no paired-end reads (0.0%);
+  5731 loci had paired-end reads that couldn't be assembled into a contig (0.2%);
+  For the remaining 2408891 loci (99.8%), a paired-end contig was assembled;
+    Average contig size was 157.5 bp;
+  1636729 paired-end contigs overlapped the forward region (67.9%)
+    Mean overlap: 28.5bp; mean size of overlapped loci after merging: 137.7;
+  Out of 286052688 paired-end reads in these loci (mean 117.4 reads per locus),
+    282741804 were successfuly aligned (98.8%);
+  Mean insert length was 143.2, stdev: 30.7 (based on aligned reads in overlapped loci).
+
+Genotyped 2408880 loci:
+  effective per-sample coverage: mean=50.9x, stdev=28.0x, min=6.6x, max=163.7x
+  mean number of sites per locus: 154.2
+  a consistent phasing was found for 295253 of out 405236 (72.9%) diploid loci needing phasing
+```
+

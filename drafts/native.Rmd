@@ -1,0 +1,63 @@
+---
+categories: 
+- tutorials
+excerpt: "What is a 'Native' species?"
+date: "2021-08-24"
+updated: 2021-08-24
+tags: 
+- taxonomy
+- conservation
+title: "Clarifying terms: native and introduced, weedy and invasive"
+slug: native-sepcies
+bibliography: ../plantarum.bib
+link-citations: true
+---
+
+# Native Species
+
+[COSEWIC](https://www.cosewic.ca/index.php/en-ca/assessment-process/wildlife-species-assessment-process-categories-guidelines/determining-eligibility-status-assessment.html):
+
+> COSEWIC would normally only consider native wildlife species. A native
+> wildlife species is a wildlife species that occurs in Canada naturally,
+> or that has expanded its range into Canada without direct human
+> intervention from a region where it naturally occurred, has produced
+> viable populations, and has persisted in Canada for at least 50 years.  
+
+
+> As stated in the species at Risk Act, a wildlife species is, in the
+> absence of evidence to the contrary, presumed to have been present in
+> Canada for at least 50 years and therefore eligible for assessment.
+
+
+European Union (1979) Convention on the conservation of European wildlife
+and natural habitats (Bern Convention). 19.IX.1979. The Council of Europe,
+Bern, Germany. :
+
+> A species that has been observed in the form of a naturally occurring and
+> self-sustaining population in historical times. 
+
+
+
+ICES (1994) ICES Code of Practice on the Introduction and Transfers of
+Marine Organisms. International Council for the Exploration of the Sea,
+Copenhagen, Denmark.: 
+
+> A species or lower taxon living within its natural range (past or
+> present) including the area which it can reach and occupy using its
+> natural dispersal systems.
+
+[USA Executive Order 13112 - Invasive Species](https://www.invasivespeciesinfo.gov/executive-order-13112-section-1-definitions):
+
+> "Native species" means, with respect to a particular ecosystem, a species
+> that, other than as a result of an introduction, historically occurred or
+> currently occurs in that ecosystem.
+
+# Alien Species
+
+[Secretariat of the Convention on Biological Diversity
+2002](https://www.cbd.int/decision/cop/?id=7197):
+
+> "alien species" refers to a species, subspecies or lower taxon,
+> introduced outside its natural past or present distribution; includes any
+> part, gametes, seeds, eggs, or propagules of such species that might
+> survive and subsequently reproduce;

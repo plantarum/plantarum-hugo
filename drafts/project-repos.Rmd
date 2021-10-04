@@ -1,0 +1,77 @@
+---
+categories: 
+- tutorials
+excerpt: "Make your research archive-ready from the start "
+date: "2021-02-15"
+updated: 2021-02-15
+tags: 
+- reproducible research
+- R
+- Rmarkdown
+title: "Rules for organizing research repositories"
+slug: project-repos
+bibliography: ../plantarum.bib
+link-citations: true
+---
+
+# Motivation
+
+One of the last things I do with every research project is sift through the
+accumulated files, including data, code, references and notes, and put it
+together into some semblance of a coherent structure. You might think this
+is what the published manuscript is. But the reality is much messier. The
+publication is really just the highlights, the important conclusions. 
+
+The benefits of a having a thoroughly documented archive of your work are
+many. With a clearly documented, automated analysis workflow, you: 
+
+- save time incorporating revisions during peer review
+- easily reuse code, data, and analysis in new projects
+- share your work with collaborators or students
+
+All of these things are *usually* easy to do at the moment you finish a
+project. They become much harder as time passes, and those hard-won writing
+victories slip out of your memory, replaced by more pressing issues.
+
+As I said at the beginning, addressing this is one of the last things that
+I do on a project before moving on. It would be preferable to start from
+the beginning with the goal of building a permanent archive. That takes a
+more discipline, but it's something I'm getting better at. With that in
+mind, this post documents my current process for staying on top of a
+projects permanent archive as I work on it, so that the final review is as
+painless as possible.
+
+# Getting organized
+
+## Rule 1: use a single directory
+
+All of the files for a single project should be in one directory, and you
+shouldn't have files for other projects mixed in with them. Why?
+
+- it makes it easy to use source control/backup/archiving tools like
+  [git](https://git-scm.com/), [NextCloud](https://nextcloud.com/), Dropbox
+  etc.
+- it makes it easy to share with collaborators
+- it makes it easy to transfer your project to a new computer when your
+  current computer breaks down
+
+### Exceptions
+
+If you have truly large datasets that you use on multiple projects, it may
+not be practical to include copies in every the directory for each project.
+Examples in my lab are climate rasters. We use the same ones in many
+projects, and the files can occupy a large fraction of your hard drive.
+
+To cope with this, include an explanation of what these files are, where
+you've stored them, and where they came from in your file manifest (see
+below). i.e., 
+
+
+
+The first rule is to keep all the files for a project, and just that
+project, in a single directory. It makes life much easier if you know
+everything is together in one place. While you're working alone, it's easy
+to let files drift around your computer. 
+
+
+
