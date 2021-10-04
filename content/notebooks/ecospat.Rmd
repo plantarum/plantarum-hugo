@@ -3,7 +3,7 @@ categories:
 - notebooks
 excerpt: What exactly do grid.clim.dyn et al. do?
 date: 2021-03-01
-updated: 2021-03-02
+updated: 2021-06-01
 tags:
 - sdm
 - spatial
@@ -228,7 +228,7 @@ xmin <- apply(scores.clim, 2, min, na.rm = T)
 xmax <- apply(scores.clim, 2, max, na.rm = T)
 ext <- c(xmin[1], xmax[1], xmin[2], xmax[2])
 
-## Shift the raw data to match the extent:
+## Scale the raw coordinates to 0-1:
 xr <- data.frame(
   cbind(
   (scores.clim[, 1] - ext[1]) / abs(ext[2] - ext[1]),
@@ -239,14 +239,15 @@ mask <- adehabitatMA::ascgen(
                        (0:(R) / R))), nrcol = R - 2,
                        count = FALSE) 
 
-x.dens <- adehabitatHR::kernelUD(sp::SpatialPoints(xr[, 1:2]),
+x.UD <- adehabitatHR::kernelUD(sp::SpatialPoints(xr[, 1:2]),
                                 h = "href", grid = mask,
                                 kern = "bivnorm"
-                                ) 
+                                )
+
 ## Shift the density back to match the original projection:
 x.dens <- raster::raster(
                    xmn = ext[1], xmx = ext[2], ymn = ext[3],
-                   ymx = ext[4], matrix(x.dens$ud, nrow = R)
+                   ymx = ext[4], matrix(x.UD$ud, nrow = R)
                  )
   
 plot(x.dens)
@@ -342,7 +343,6 @@ look again:
 
 
 ```{R trimmed}
-## Shift the raw data to match the extent:
 sp1.trim <- sp1.scores[1:7, ]
 trimr <- data.frame(
   cbind(
@@ -383,8 +383,7 @@ points(sp1.trim, pch = 16, cex = 1,
        col = adjustcolor("black", alpha.f = 0.4))
 ```
 
-Still a pretty subtle difference, even with 32 points.
-
+Still a pretty subtle difference, even with only 10 points.
 
 # Niche expansion, stability, and unfilling
 
