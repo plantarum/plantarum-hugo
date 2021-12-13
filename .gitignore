@@ -6,3 +6,5 @@
 .DS_Store
 Thumbs.db
 *html
+index_files/
+header-attrs/
