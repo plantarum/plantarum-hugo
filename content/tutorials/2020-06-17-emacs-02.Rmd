@@ -9,7 +9,7 @@ tags:
 - orgmode
 title: "Emacs for Bioinformatics #2: Orgmode"
 slug: emacs-tutorial-02
-bibliography: ../plantarum.bib
+bibliography: ../plantarum.json
 link-citations: true
 ---
 In the [previous post](/2020/06/16/emacs-tutorial-01/) we took a first look at Emacs, including creating and editing a script file, and passing commands from the file to the shell terminal. At the end of that post, I recommended you check out the built-in tutorial (accessible via `C-h t` from within Emacs). In this post I assume you've done so, although I won't expect you've understood everything you found there.

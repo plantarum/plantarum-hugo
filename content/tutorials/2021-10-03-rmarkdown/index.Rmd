@@ -4,7 +4,7 @@ categories:
 - tutorials
 excerpt: "Emacs for Bioinformatics: RMarkdown"
 date: "2021-10-03"
-updated: 2021-10-03
+updated: 2021-10-05
 tags: 
 - emacs
 - bioinformatics
@@ -13,7 +13,7 @@ tags:
 title: "Emacs for Bioinformatics #4: RMarkdown"
 slug: emacs-tutorial-rmarkdown
 author: "Tyler Smith"
-bibliography: ../../plantarum.bib
+bibliography: ../../plantarum.json
 link-citations: true
 ---
 
@@ -355,14 +355,12 @@ Polymode provides some additional conveniences:
 
 ### Navigation
 
-`polymode-next-chunk`/`polymode-previous-chunk`, bound to `M-n C-n` and `M-n
-C-p`
+`polymode-next-chunk`/`polymode-previous-chunk`, bound to `M-n C-n` and `M-n C-p`
 
 : move to the next/previous chunk. i.e., move from an RMarkdown chunk to
   the next R code chunk.
 
-`polymode-next-chunk-same-type`/`polymode-previous-chunk-same-type`, bound
-to `M-n M-C-n` and `M-n M-C-p`
+`polymode-next-chunk-same-type`/`polymode-previous-chunk-same-type`, bound to `M-n M-C-n` and `M-n M-C-p`
 
 : move to the next/previous chunk of the same type. i.e., move from one R
   code chunk the next R code chunk.
@@ -385,11 +383,11 @@ to `M-n M-C-n` and `M-n M-C-p`
   
 `polymode-eval-buffer`, bound to `M-n b`
 
-`polymode-eval-buffer-from-beg-to-point`/`polymode-eval-buffer-from-point-to-end`,
-bound to `M-n u` or `M-n ↑`, and `M-n d` or `M-n ↓`
+: evaluate all code chunks in the buffer
 
-: evaluate all code chunks from the beginning of the buffer to point (`u`
-and `↑`), or from point to the end of the buffer (`d` and `↓`)
+`polymode-eval-buffer-from-beg-to-point`/`polymode-eval-buffer-from-point-to-end`, bound to `M-n u` or `M-n ↑`, and `M-n d` or `M-n ↓`
+
+: evaluate all code chunks from the beginning of the buffer to point (`u` and `↑`), or from point to the end of the buffer (`d` and `↓`)
 
 ## Exporting RMarkdown
 

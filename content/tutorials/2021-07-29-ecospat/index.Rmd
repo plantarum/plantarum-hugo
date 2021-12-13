@@ -9,7 +9,7 @@ tags:
 - sdm
 title: "Niche Quantification with Ecospat"
 slug: ecospat
-bibliography: ../../plantarum.bib
+bibliography: ../../plantarum.json
 link-citations: true
 ---
 
@@ -115,7 +115,7 @@ internet, and saves it locally. Subsequent calls will load your local copy
 of the data, to speed things up. I'm using the coarsest resolution (10
 minutes) to speed things up for this demonstration: 
 
-```{R climate-download}
+```{R climate-download, message = FALSE, warning = FALSE, results = "hide"}
 wclim <- getData("worldclim", var = "bio", res = 10,
                 path = "../data")
 ```

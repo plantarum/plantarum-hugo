@@ -5,3 +5,4 @@
 /static/tutorials/
 .DS_Store
 Thumbs.db
+*html

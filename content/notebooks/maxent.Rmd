@@ -2,7 +2,7 @@
 categories:
 - notebooks
 excerpt: Best practices for building Maxent models
-updated: 2021-03-11
+updated: 2021-12-02
 tags:
 - sdm
 - spatial
@@ -12,7 +12,7 @@ output:
   blogdown::html_page:
     toc: true
 date: 2020-06-15
-bibliography: ../plantarum.bib
+bibliography: ../plantarum.json
 csl: ../american-journal-of-botany.csl
 link-citations: true
 ---

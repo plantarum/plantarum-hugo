@@ -9,7 +9,7 @@ tags:
 - maps
 title: "Adding Lat/Lon Grids to Maps in R"
 slug: graticules-r
-bibliography: ../plantarum.bib
+bibliography: ../plantarum.json
 link-citations: true
 ---
 

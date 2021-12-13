@@ -9,7 +9,7 @@ tags:
 - spatial
 title: Ecospat Niche Overlap Analysis
 slug: ecospat
-bibliography: ../plantarum.bib
+bibliography: ../plantarum.json
 csl: ../american-journal-of-botany.csl
 link-citations: true
 ---

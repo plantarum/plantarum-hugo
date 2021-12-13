@@ -10,7 +10,7 @@ slug: spatial-ordination
 output:
   blogdown::html_page:
     toc: true
-bibliography: ../plantarum.bib
+bibliography: ../plantarum.json
 link-citations: true
 date: 2020-07-24
 updated: 2021-01-03

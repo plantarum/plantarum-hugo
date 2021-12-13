@@ -9,7 +9,7 @@ tags:
 - herbarium
 - fieldwork
 date: "2013-08-25"
-updated: 2021-02-23
+updated: 2021-11-09
 slug: rubus-herbarium
 ---
 
@@ -19,13 +19,7 @@ not appreciate everything that is involved. More than in other vascular
 plant groups, to make a good *Rubus* specimens, you need to understand a
 bit about the their life-cycle.
 
-![A single *Rubus allegheniensis* specimen, with the first-year primocane
-on the right, the second-year floricane on the left, and my expert *Rubus*
-presser Charlotte in the middle. Note that the primocane is unbranched,
-while the floricane has many flowering branches](assets/TWS3673-web.jpg
-"Charlotte holding two *Rubus* canes, one unbranched with only leaves, and
-the other branching with flowers/fruits visible at the ends of the
-branches")
+{{< figure src="assets/TWS3673-web.jpg" width=100% caption="A single *Rubus allegheniensis* specimen, with the first-year primocane on the right, the second-year floricane on the left, and my expert *Rubus* presser Charlotte in the middle. Note that the primocane is unbranched, while the floricane has many flowering branches" >}}
 
 Blackberries, and most other *Rubus*, are perennial shrubs. However, their
 stems, called canes, are biennial. In the first year of growth a cane

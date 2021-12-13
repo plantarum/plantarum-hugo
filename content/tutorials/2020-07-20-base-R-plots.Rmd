@@ -10,7 +10,7 @@ tags:
 - data visualization
 title: "Publication Quality R Figures"
 slug: r-graphics
-bibliography: ../plantarum.bib
+bibliography: ../plantarum.json
 link-citations: true
 output:
   blogdown::html_page:

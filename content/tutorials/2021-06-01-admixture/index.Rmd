@@ -9,7 +9,7 @@ tags:
 - bioinformatics
 title: "GBS Admixture Analysis Workflow"
 slug: admixture
-bibliography: ../../plantarum.bib
+bibliography: ../../plantarum.json
 link-citations: true
 ---
 

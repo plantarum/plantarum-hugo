@@ -8,7 +8,7 @@ tags:
 - bioinformatics
 title: "Emacs for Bioinformatics: Getting Started"
 slug: emacs-tutorial-01
-bibliography: ../plantarum.bib
+bibliography: ../plantarum.json
 link-citations: true
 ---
 
